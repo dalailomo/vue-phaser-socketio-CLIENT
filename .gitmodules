@@ -1,0 +1,6 @@
+[submodule "vue-phaser-socketio-SERVER"]
+	path = vue-phaser-socketio-SERVER
+	url = git@github.com:dalailomo/vue-phaser-socketio-SERVER.git
+[submodule "vue-phaser-socketio-GAME"]
+	path = vue-phaser-socketio-GAME
+	url = git@github.com:dalailomo/vue-phaser-socketio-GAME.git

@@ -15,7 +15,7 @@ export default defineComponent({
         const messages: Ref<string[]> = ref([]);
 
         socket.on(HANDLE_IO_EMIT_LOG_EVENT.SE_LogMessage, (payload) => {
-            messages.value.push(`Someone clicked on: ${payload} at ${new Date()}`)
+            messages.value.push(`${payload} at ${new Date()}`)
         });
 
         return { messages }

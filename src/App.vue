@@ -1,15 +1,14 @@
 <template>
     <NamePrompt v-if="showNamePrompt" />
-    <template v-else-if="ready">
+    <template v-else>
         <OnlineUsers />
         <EventLog />
         <div class="game-view" :id="containerId" />
     </template>
-    <div v-else>Loading...</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, provide, ref } from "vue";
+import { defineComponent, onMounted, provide, ref } from "vue";
 import { Game } from "phaser";
 import { connect } from "../modules/socket";
 import OnlineUsers from "./components/OnlineUsers.vue";
@@ -41,29 +40,22 @@ export default defineComponent({
         const socket = connect("http://localhost:3000", localStorage.getItem("name") || `Unnamed.${Math.random() * 10}`);
         provide("socket", socket);
 
-        // Provide phaser game instance once is ready
-        const containerId = "game-container";
-        const gameInstance: Game = launch(containerId);
-        provide("gameInstance", gameInstance);
-
-        // Let template know when game instance is ready
-        const ready = ref(false);
-        gameInstance.events.on('ready', () => {
-            ready.value = true;
-        });
-
-        // Emits the request for connected users
+        // Emits the request for connected users from the client socket
         socket.emit(HANDLE_USER_CONNECTIONS_EVENT.CE_ConnectedUsers);
 
-        // Emits an event to the server to notify all users that a game object has been clicked
-        gameInstance.events.on(
-            PLAY_SCENE_EVENT.gameEmitsClickedBomb,
-            (payload: string) => {
-                socket.emit(HANDLE_IO_EMIT_LOG_EVENT.CE_LogMessage, payload);
-            }
-        );
+        // Initialize the game instance once component is mounted to have the DOM present for phaser to mount it on a div
+        const containerId = "game-container";
+        onMounted(() => {
+            const gameInstance: Game = launch(containerId);
 
-        return { containerId, ready, showNamePrompt }
+            // Emits an event to the server to notify all users that a game object has been clicked
+            // TODO this should be done somewhere else but for the purpose of this demo its ok to leave it here for now
+            gameInstance.events.on(PLAY_SCENE_EVENT.gameEmitsClickedBomb, (id: string) => {
+                socket.emit(HANDLE_IO_EMIT_LOG_EVENT.CE_LogMessage, `${localStorage.getItem('name')} clicked gameobject id: ${id}`);
+            });
+        });
+
+        return { containerId, showNamePrompt }
     },
 });
 </script>
@@ -79,10 +71,12 @@ body {
 </style>
 
 <style lang="scss" scoped>
-// .game-view {
-//     position: absolute;
-//     z-index: -1;
-//     left: 0;
-//     top: 0;
-// }
+.game-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+}
 </style>

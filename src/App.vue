@@ -10,7 +10,7 @@ import { defineComponent, provide, ref } from "vue";
 import { connect } from "../modules/socket";
 import OnlineUsers from "./components/OnlineUsers.vue";
 import NamePrompt from "./components/NamePrompt.vue";
-import { HANDLE_USER_CONNECTIONS_EVENT } from '../../vue-phaser-socketio-SERVER/modules/socket-handlers/handle-user-connections'
+import { HANDLE_USER_CONNECTIONS_EVENT } from '../vue-phaser-socketio-SERVER/modules/socket-handlers/handle-user-connections';
 
 export default defineComponent({
     name: "App",
@@ -29,14 +29,11 @@ export default defineComponent({
         }
 
         // Provide the socket
-        const socket = connect(
-            "http://localhost:3000",
-            localStorage.getItem("name") || "Unnamed"
-        );
+        const socket = connect("http://localhost:3000", localStorage.getItem("name") || `Unnamed.${Math.random() * 10}`);
         provide("socket", socket);
 
         // Emits the request for connected users
-        socket.emit(HANDLE_USER_CONNECTIONS_EVENT.clientRequestConnectedUsers);
+        socket.emit(HANDLE_USER_CONNECTIONS_EVENT.CE_ConnectedUsers);
 
         return { showNamePrompt }
     },

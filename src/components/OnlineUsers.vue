@@ -17,12 +17,12 @@ export default defineComponent({
         const socket = inject("socket") as Socket;
         const users: Ref<{ [key: string]: User }> = ref({});
 
-        socket.on(HANDLE_USER_CONNECTIONS_EVENT.serverReturnsConnectedUsers, (userList: { [key: string]: User }) => {
+        socket.on(HANDLE_USER_CONNECTIONS_EVENT.SB_ConnectedUsers, (userList: { [key: string]: User }) => {
             users.value = userList;
         });
 
         onUnmounted(() => {
-            socket.off(HANDLE_USER_CONNECTIONS_EVENT.serverReturnsConnectedUsers);
+            socket.off(HANDLE_USER_CONNECTIONS_EVENT.SB_ConnectedUsers);
         });
 
         return { users };

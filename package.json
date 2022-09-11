@@ -9,6 +9,7 @@
         "test:e2e": "vue-cli-service test:e2e"
     },
     "dependencies": {
+        "socket.io-client": "^4.5.2",
         "vue": "^3.2.13"
     },
     "devDependencies": {
